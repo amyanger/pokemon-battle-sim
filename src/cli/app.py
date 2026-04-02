@@ -67,10 +67,7 @@ class AIController:
             else:
                 combined.append(0)
 
-        if not combined or max(combined) <= 0:
-            alive = self.battle.get_alive_indices("opponent")
-            if alive:
-                return BattleAction(ActionType.SWITCH, switch_index=alive[0])
+        if not combined:
             return BattleAction(ActionType.MOVE, move_index=0)
 
         best_idx = combined.index(max(combined))
