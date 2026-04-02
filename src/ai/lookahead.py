@@ -3,6 +3,7 @@ import copy
 from dataclasses import dataclass
 from src.engine.pokemon import Pokemon, Move, MoveCategory, Status
 from src.engine.damage import calculate_damage
+from src.engine.moves import apply_move_effects
 
 
 @dataclass
@@ -50,6 +51,7 @@ class Lookahead:
 
         our_result = calculate_damage(sim_attacker, sim_defender, move, critical=False, roll=92)
         sim_defender.take_damage(our_result.damage)
+        apply_move_effects(sim_attacker, sim_defender, move, our_result.damage, deterministic=True)
 
         if not sim_defender.is_alive:
             opp_alive_after = opp_alive - 1
@@ -75,6 +77,7 @@ class Lookahead:
             sim_def2 = self._clone_pokemon(sim_defender)
             opp_result = calculate_damage(sim_def2, sim_atk2, opp_move, critical=False, roll=92)
             sim_atk2.take_damage(opp_result.damage)
+            apply_move_effects(sim_def2, sim_atk2, opp_move, opp_result.damage, deterministic=True)
             opp_eval = self._evaluate_current(sim_atk2, sim_def2, my_alive, opp_alive)
             if -opp_eval > best_opp_score:
                 best_opp_score = -opp_eval

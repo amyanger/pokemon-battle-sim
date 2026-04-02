@@ -111,6 +111,16 @@ def show_events(events: list[BattleEvent]):
             console.print(f"  [magenta]{event.message}[/magenta]")
         elif event.event_type == EventType.MISS:
             console.print(f"  [dim]{event.message}[/dim]")
+        elif event.event_type == EventType.STATUS:
+            console.print(f"  [yellow]{event.message}[/yellow]")
+        elif event.event_type == EventType.STAT_CHANGE:
+            console.print(f"  [blue]{event.message}[/blue]")
+        elif event.event_type == EventType.RECOIL:
+            console.print(f"  [red]{event.message}[/red]")
+        elif event.event_type == EventType.DRAIN:
+            console.print(f"  [green]{event.message}[/green]")
+        elif event.event_type == EventType.HEAL:
+            console.print(f"  [green]{event.message}[/green]")
         else:
             console.print(f"  {event.message}")
 

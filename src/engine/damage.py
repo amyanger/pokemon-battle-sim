@@ -1,7 +1,7 @@
 from __future__ import annotations
 import random
 from dataclasses import dataclass
-from src.engine.pokemon import Pokemon, Move, MoveCategory
+from src.engine.pokemon import Pokemon, Move, MoveCategory, Status
 from src.engine.typechart import get_matchup
 
 
@@ -33,6 +33,9 @@ def calculate_damage(
     if move.category == MoveCategory.PHYSICAL:
         atk = attacker.get_effective_stat("attack")
         dfn = defender.get_effective_stat("defense")
+        # Burn halves physical attack
+        if attacker.status == Status.BURN:
+            atk = atk // 2
     else:
         atk = attacker.get_effective_stat("sp_attack")
         dfn = defender.get_effective_stat("sp_defense")

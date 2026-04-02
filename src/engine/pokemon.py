@@ -29,6 +29,14 @@ class Move:
     pp: int
     priority: int
     effect: str | None
+    ailment: str = "none"
+    ailment_chance: int = 0
+    stat_changes: list[tuple[str, int]] = field(default_factory=list)
+    stat_change_target: str = "user"
+    stat_chance: int = 0
+    drain: int = 0
+    healing: int = 0
+    flinch_chance: int = 0
     current_pp: int = -1
 
     def __post_init__(self):

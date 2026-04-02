@@ -25,6 +25,26 @@ class PokeAPIClient:
 
     def get_move(self, name: str) -> Move:
         data = self._get(f"/move/{name}")
+        meta = data.get("meta") or {}
+
+        _stat_name_map = {
+            "attack": "attack", "defense": "defense", "speed": "speed",
+            "special-attack": "sp_attack", "special-defense": "sp_defense",
+        }
+        stat_changes = [
+            (_stat_name_map[sc["stat"]["name"]], sc["change"])
+            for sc in data.get("stat_changes", [])
+            if sc["stat"]["name"] in _stat_name_map
+        ]
+
+        meta_category = meta.get("category", {}).get("name", "")
+        if meta_category == "damage-lower":
+            stat_change_target = "target"
+        elif meta_category in ("damage-raise", "net-good-stats"):
+            stat_change_target = "auto"
+        else:
+            stat_change_target = "user"
+
         return Move(
             name=data["name"],
             type=data["type"]["name"],
@@ -34,6 +54,14 @@ class PokeAPIClient:
             pp=data["pp"],
             priority=data["priority"],
             effect=data["effect_entries"][0]["short_effect"] if data["effect_entries"] else None,
+            ailment=meta.get("ailment", {}).get("name", "none") or "none",
+            ailment_chance=meta.get("ailment_chance", 0) or 0,
+            stat_changes=stat_changes,
+            stat_change_target=stat_change_target,
+            stat_chance=meta.get("stat_chance", 0) or 0,
+            drain=meta.get("drain", 0) or 0,
+            healing=meta.get("healing", 0) or 0,
+            flinch_chance=meta.get("flinch_chance", 0) or 0,
         )
 
     def get_pokemon(

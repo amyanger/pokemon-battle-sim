@@ -4,7 +4,7 @@ from dataclasses import dataclass, field
 from enum import Enum
 from src.engine.pokemon import Pokemon, Move, Status
 from src.engine.damage import calculate_damage, DamageResult
-from src.engine.moves import apply_end_of_turn, can_act, get_effective_speed
+from src.engine.moves import apply_end_of_turn, can_act, get_effective_speed, apply_move_effects
 from src.engine.typechart import get_matchup
 
 
@@ -18,6 +18,7 @@ class EventType(Enum):
     DAMAGE = "damage"
     MISS = "miss"
     STATUS = "status"
+    STAT_CHANGE = "stat_change"
     FAINT = "faint"
     SWITCH = "switch"
     EFFECTIVENESS = "effectiveness"
@@ -25,6 +26,9 @@ class EventType(Enum):
     END_OF_TURN = "end_of_turn"
     CANT_ACT = "cant_act"
     ITEM_USED = "item_used"
+    RECOIL = "recoil"
+    DRAIN = "drain"
+    HEAL = "heal"
 
 
 @dataclass
@@ -143,6 +147,14 @@ class Battle:
 
         return events
 
+    _EVENT_TYPE_MAP = {
+        "status": EventType.STATUS,
+        "stat_change": EventType.STAT_CHANGE,
+        "drain": EventType.DRAIN,
+        "recoil": EventType.RECOIL,
+        "heal": EventType.HEAL,
+    }
+
     def _execute_action(self, entry: TurnEntry, target: Pokemon) -> list[BattleEvent]:
         events: list[BattleEvent] = []
 
@@ -194,6 +206,10 @@ class Battle:
                 if result.critical:
                     events.append(BattleEvent(EventType.CRITICAL, message="A critical hit!"))
 
+                # Apply move effects (status, stat changes, drain, recoil, flinch)
+                effect_events = apply_move_effects(entry.pokemon, target, move, result.damage)
+                self._append_effect_events(events, effect_events, entry.pokemon)
+
                 if not target.is_alive:
                     events.append(BattleEvent(EventType.FAINT, source=target.name,
                                               message=f"{target.name} fainted!"))
@@ -201,13 +217,36 @@ class Battle:
                         self.player_fainted += 1
                     else:
                         self.opponent_fainted += 1
+
             elif result.effectiveness == 0.0:
                 events.append(BattleEvent(EventType.EFFECTIVENESS,
                                           source=entry.pokemon.name,
                                           message=f"It doesn't affect {target.name}...",
                                           effectiveness=0.0))
+            else:
+                # Zero-damage, non-immune move (STATUS moves like Thunder Wave, Swords Dance, Recover)
+                events.append(BattleEvent(EventType.DAMAGE, source=entry.pokemon.name,
+                                          target=target.name, damage=0,
+                                          message=f"{entry.pokemon.name} used {move.name}!"))
+                effect_events = apply_move_effects(entry.pokemon, target, move, 0)
+                self._append_effect_events(events, effect_events, entry.pokemon)
 
         return events
+
+    def _append_effect_events(self, events: list[BattleEvent],
+                              effect_events: list[tuple[str, str]],
+                              attacker: Pokemon) -> None:
+        for etype, msg in effect_events:
+            event_type = self._EVENT_TYPE_MAP.get(etype, EventType.STATUS)
+            events.append(BattleEvent(event_type, source=attacker.name, message=msg))
+            # Check if attacker died from recoil
+            if etype == "recoil" and not attacker.is_alive:
+                events.append(BattleEvent(EventType.FAINT, source=attacker.name,
+                                          message=f"{attacker.name} fainted!"))
+                if attacker in self.player_team:
+                    self.player_fainted += 1
+                else:
+                    self.opponent_fainted += 1
 
     def is_over(self) -> bool:
         player_alive = any(p.is_alive for p in self.player_team)
