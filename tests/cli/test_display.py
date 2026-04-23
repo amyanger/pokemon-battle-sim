@@ -259,3 +259,54 @@ def test_show_turn_renders_events_with_bullets():
     assert "Events" in out
     assert out.count("▸") == 2
     assert "84 damage" in out
+
+
+from src.engine.pokemon import Move, MoveCategory
+from src.cli.display import show_move_menu
+
+
+def _make_move(name="dark-pulse", type_="dark", power=80, accuracy=100, pp=15):
+    return Move(
+        name=name, type=type_, category=MoveCategory.SPECIAL,
+        power=power, accuracy=accuracy, pp=pp, priority=0, effect=None,
+    )
+
+
+def test_show_move_menu_has_framed_header_and_columns():
+    poke = _make_pokemon(moves=[
+        _make_move("dark-pulse", "dark", 80, 100, 15),
+        _make_move("nasty-plot", "dark", 0, 0, 20),
+        _make_move("dream-eater", "psychic", 100, 100, 15),
+        _make_move("dark-void", "dark", 0, 80, 10),
+    ])
+    import src.cli.display as d
+    d.console = Console(record=True, width=100, force_terminal=True)
+    show_move_menu(poke, can_switch=True)
+    out = d.console.export_text()
+    assert "Dark Pulse" in out
+    assert "DARK" in out
+    assert "Pow 80" in out
+    assert "Acc 100" in out
+    assert "15/15" in out
+    assert "Switch" in out
+    assert "Moves" in out  # panel title
+
+
+def test_show_move_menu_no_switch_hides_switch_row():
+    poke = _make_pokemon(moves=[_make_move()])
+    import src.cli.display as d
+    d.console = Console(record=True, width=100, force_terminal=True)
+    show_move_menu(poke, can_switch=False)
+    out = d.console.export_text()
+    assert "Switch" not in out
+
+
+def test_show_move_menu_status_move_shows_dashes_for_power():
+    poke = _make_pokemon(moves=[_make_move("nasty-plot", "dark", 0, 0, 20)])
+    import src.cli.display as d
+    d.console = Console(record=True, width=100, force_terminal=True)
+    show_move_menu(poke, can_switch=False)
+    out = d.console.export_text()
+    assert "Nasty Plot" in out
+    # power 0 and accuracy 0 should render as em dashes
+    assert "—" in out

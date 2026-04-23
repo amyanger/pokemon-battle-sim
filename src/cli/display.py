@@ -219,18 +219,31 @@ def show_turn(battle: Battle, opponent_name: str, events: list[BattleEvent]) -> 
     console.print(Panel(Group(*parts), title=f"Turn {battle.turn_count}", box=box.ROUNDED, padding=(0, 1), expand=False))
 
 
-def show_move_menu(pokemon: Pokemon, can_switch: bool = True):
-    console.print(f"  {pokemon.name.title()}'s moves:", style="bold")
+def show_move_menu(pokemon: Pokemon, can_switch: bool = True) -> None:
+    body = Text()
     for i, move in enumerate(pokemon.moves):
+        row = Text()
+        row.append(f"  {i + 1}. ", style="bold")
+        row.append(f"{move.name.replace('-', ' ').title():16s}")
+        row.append("  ")
+        row.append_text(_type_badge(move.type))
+        row.append("   ")
+        pow_str = f"Pow {move.power}" if move.power > 0 else "—"
+        row.append(pow_str)
+        row.append("   ")
+        acc_str = f"Acc {move.accuracy}" if move.accuracy > 0 else "—"
+        row.append(acc_str)
+        row.append("   ")
         pp_color = "green" if move.current_pp > move.pp // 4 else "red"
-        console.print(
-            f"    {i + 1}. {move.name.replace('-', ' ').title():20s} "
-            f"({move.type.title():10s}) "
-            f"[{pp_color}]PP: {move.current_pp}/{move.pp}[/{pp_color}]"
-        )
+        row.append(f"{move.current_pp}/{move.pp}", style=pp_color)
+        body.append_text(row)
+        if i < len(pokemon.moves) - 1:
+            body.append("\n")
     if can_switch:
-        console.print(f"    {len(pokemon.moves) + 1}. Switch Pokemon")
-    console.print()
+        body.append("\n\n")
+        body.append(f"  {len(pokemon.moves) + 1}. Switch Pokémon", style="cyan")
+    title = f"{pokemon.name.title()}'s Moves"
+    console.print(Panel(body, title=title, box=box.ROUNDED, padding=(0, 1), expand=False))
 
 
 def show_switch_menu(team: list[Pokemon], active_index: int):
