@@ -207,3 +207,9 @@ def test_pokemon_card_shows_status_and_stages():
     out = _render(_pokemon_card(poke))
     assert "BRN" in out
     assert "Atk +1" in out
+
+
+def test_pokemon_card_multi_type_badges_are_space_separated():
+    poke = _make_pokemon(name="garchomp", types=["dragon", "ground"])
+    out = _render(_pokemon_card(poke))
+    assert "] [" in out
