@@ -92,7 +92,7 @@ _STAGE_LABELS: dict[str, str] = {
 }
 
 
-def _stages_text(pokemon) -> Text:
+def _stages_text(pokemon: Pokemon) -> Text:
     parts: list[str] = []
     for stat, label in _STAGE_LABELS.items():
         val = pokemon.stat_stages.get(stat, 0)
