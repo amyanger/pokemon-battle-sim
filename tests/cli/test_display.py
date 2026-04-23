@@ -1,5 +1,5 @@
 from rich.console import Console
-from src.cli.display import _type_badge, TYPE_COLORS
+from src.cli.display import _type_badge, TYPE_COLORS, _hp_bar, _hp_color
 
 
 def _render(renderable) -> str:
@@ -25,3 +25,35 @@ def test_type_colors_has_all_gen4_types():
         "rock", "ghost", "dragon", "dark", "steel",
     }
     assert set(TYPE_COLORS.keys()) == expected
+
+
+def test_hp_color_tiers():
+    assert _hp_color(1.0) == "green"
+    assert _hp_color(0.51) == "green"
+    assert _hp_color(0.50) == "yellow"
+    assert _hp_color(0.21) == "yellow"
+    assert _hp_color(0.20) == "red"
+    assert _hp_color(0.0) == "red"
+
+
+def test_hp_bar_full_is_all_filled():
+    output = _render(_hp_bar(280, 280, width=24))
+    assert output.count("█") == 24
+    assert "░" not in output
+    assert "280/280" in output.replace(" ", "")
+    assert "100%" in output
+
+
+def test_hp_bar_empty_is_all_unfilled():
+    output = _render(_hp_bar(0, 280, width=24))
+    assert output.count("░") == 24
+    assert "█" not in output
+    assert "0/280" in output.replace(" ", "")
+    assert "0%" in output
+
+
+def test_hp_bar_half_is_half_filled():
+    output = _render(_hp_bar(140, 280, width=24))
+    assert output.count("█") == 12
+    assert output.count("░") == 12
+    assert "50%" in output

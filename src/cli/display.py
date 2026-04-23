@@ -48,14 +48,15 @@ def _hp_color(pct: float) -> str:
     return "red"
 
 
-def _hp_bar(current: int, maximum: int, width: int = 20) -> Text:
+def _hp_bar(current: int, maximum: int, width: int = 24) -> Text:
     pct = current / max(maximum, 1)
-    filled = int(pct * width)
+    filled = int(round(pct * width))
+    filled = max(0, min(width, filled))
     color = _hp_color(pct)
-    bar = Text("[")
-    bar.append("|" * filled, style=color)
-    bar.append("-" * (width - filled), style="dim")
-    bar.append(f"] {current}/{maximum}")
+    bar = Text()
+    bar.append("█" * filled, style=color)
+    bar.append("░" * (width - filled), style="dim")
+    bar.append(f"  {current} / {maximum}   {int(pct * 100)}%")
     return bar
 
 
