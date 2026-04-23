@@ -3,7 +3,7 @@ import random
 import typer
 from rich.console import Console
 from src.data.pokeapi_client import PokeAPIClient
-from src.engine.battle import Battle, BattleAction, ActionType
+from src.engine.battle import Battle, BattleAction, ActionType, BattleEvent, EventType
 from src.engine.pokemon import Status
 from src.ai.scorer import MoveScorer, GameState
 from src.ai.lookahead import Lookahead
@@ -191,26 +191,24 @@ def battle():
         console.print(f"\n[bold]Battle Start: You vs {opponent_name}![/bold]\n")
 
         while not battle_state.is_over():
-            show_battle_state(
-                battle_state.player_pokemon,
-                battle_state.opponent_pokemon,
-                battle_state.turn_count + 1,
-                opponent_name,
-            )
-
             player_action = _get_player_action(battle_state)
             ai_action = ai.choose_action()
 
             # Handle AI items
+            full_restore_event: list[BattleEvent] = []
             if ai_action.action_type == ActionType.ITEM:
-                console.print(f"  [cyan]{opponent_name} used a Full Restore![/cyan]")
+                full_restore_event = [BattleEvent(
+                    event_type=EventType.ITEM_USED,
+                    message=f"{opponent_name} used a Full Restore!",
+                )]
                 battle_state.opponent_pokemon.current_hp = battle_state.opponent_pokemon.max_hp
                 battle_state.opponent_pokemon.status = Status.NONE
                 # Player still gets their move — treat AI as doing nothing offensively
                 ai_action = BattleAction(ActionType.MOVE, move_index=0)
 
             events = battle_state.execute_turn(player_action, ai_action)
-            show_events(events)
+            events = full_restore_event + events
+            show_turn(battle_state, opponent_name, events)
 
             # Record turn in AI memory
             p_move = (battle_state.player_pokemon.moves[player_action.move_index].name
