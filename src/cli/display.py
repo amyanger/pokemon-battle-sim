@@ -10,6 +10,36 @@ from src.engine.battle import BattleEvent, EventType
 console = Console()
 
 
+TYPE_COLORS: dict[str, str] = {
+    "normal": "white",
+    "fire": "bright_red",
+    "water": "bright_blue",
+    "electric": "bright_yellow",
+    "grass": "bright_green",
+    "ice": "bright_cyan",
+    "fighting": "red",
+    "poison": "magenta",
+    "ground": "yellow",
+    "flying": "cyan",
+    "psychic": "bright_magenta",
+    "bug": "green",
+    "rock": "yellow",
+    "ghost": "purple",
+    "dragon": "blue",
+    "dark": "grey50",
+    "steel": "grey70",
+}
+
+
+def _type_badge(type_name: str) -> Text:
+    color = TYPE_COLORS.get(type_name, "white")
+    badge = Text()
+    badge.append("[", style="dim")
+    badge.append(type_name.upper(), style=f"bold {color}")
+    badge.append("]", style="dim")
+    return badge
+
+
 def _hp_color(pct: float) -> str:
     if pct > 0.5:
         return "green"
