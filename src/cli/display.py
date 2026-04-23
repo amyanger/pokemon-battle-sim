@@ -1,12 +1,11 @@
 from __future__ import annotations
-from io import StringIO
-from rich.console import Console
+from rich.console import Console, Group
 from rich.text import Text
 from rich.panel import Panel
 from rich.table import Table
 from rich import box
 from src.engine.pokemon import Pokemon, Status
-from src.engine.battle import BattleEvent, EventType
+from src.engine.battle import Battle, BattleEvent, EventType
 
 
 console = Console()
@@ -192,45 +191,32 @@ def _pokemon_card(pokemon: Pokemon) -> Panel:
     return Panel(body, box=box.SQUARE, padding=(0, 1), expand=True)
 
 
-def show_turn(battle, opponent_name: str, events: list[BattleEvent]) -> None:
-    opponent_dots = _team_dots(battle.opponent_team, battle.opponent_active)
-    player_dots = _team_dots(battle.player_team, battle.player_active)
-
-    body = Text()
-
+def show_turn(battle: Battle, opponent_name: str, events: list[BattleEvent]) -> None:
     opp_header = Text()
     opp_header.append(opponent_name.upper(), style="bold red")
     opp_header.append("   ")
-    opp_header.append_text(opponent_dots)
-    body.append_text(opp_header)
-    body.append("\n")
+    opp_header.append_text(_team_dots(battle.opponent_team, battle.opponent_active))
 
-    tmp = Console(file=StringIO(), width=max(40, console.width - 6), force_terminal=True)
-    tmp.print(_pokemon_card(battle.opponent_pokemon))
-    body.append(tmp.file.getvalue().rstrip("\n"))
-
-    body.append("\n\n")
     player_header = Text()
     player_header.append("YOU", style="bold green")
-    player_header.append("        ")
-    player_header.append_text(player_dots)
-    body.append_text(player_header)
-    body.append("\n")
+    player_header.append("   ")
+    player_header.append_text(_team_dots(battle.player_team, battle.player_active))
 
-    tmp2 = Console(file=StringIO(), width=max(40, console.width - 6), force_terminal=True)
-    tmp2.print(_pokemon_card(battle.player_pokemon))
-    body.append(tmp2.file.getvalue().rstrip("\n"))
+    parts: list = [
+        opp_header,
+        _pokemon_card(battle.opponent_pokemon),
+        Text(""),
+        player_header,
+        _pokemon_card(battle.player_pokemon),
+    ]
 
     if events:
-        body.append("\n\n")
-        body.append(Text("Events", style="bold underline"))
-        body.append("\n")
-        for i, ev in enumerate(events):
-            body.append_text(_event_line(ev))
-            if i < len(events) - 1:
-                body.append("\n")
+        parts.append(Text(""))
+        parts.append(Text("Events", style="bold underline"))
+        for ev in events:
+            parts.append(_event_line(ev))
 
-    console.print(Panel(body, title=f"Turn {battle.turn_count}", box=box.ROUNDED, padding=(0, 1), expand=False))
+    console.print(Panel(Group(*parts), title=f"Turn {battle.turn_count}", box=box.ROUNDED, padding=(0, 1), expand=False))
 
 
 def show_move_menu(pokemon: Pokemon, can_switch: bool = True):
