@@ -125,6 +125,44 @@ def _team_dots(team: list[Pokemon], active_index: int) -> Text:
     return out
 
 
+def _event_line(event: BattleEvent) -> Text:
+    line = Text()
+    line.append("  ▸ ", style="dim")
+    body_style = ""
+    if event.event_type == EventType.EFFECTIVENESS:
+        if event.effectiveness > 1.0:
+            body_style = "green"
+        elif event.effectiveness == 0.0:
+            body_style = "dim"
+        else:
+            body_style = "yellow"
+    elif event.event_type == EventType.CRITICAL:
+        body_style = "bold yellow"
+    elif event.event_type == EventType.FAINT:
+        body_style = "red"
+    elif event.event_type == EventType.SWITCH:
+        body_style = "cyan"
+    elif event.event_type in (EventType.CANT_ACT, EventType.MISS):
+        body_style = "dim"
+    elif event.event_type == EventType.END_OF_TURN:
+        body_style = "magenta"
+    elif event.event_type == EventType.STATUS:
+        body_style = "yellow"
+    elif event.event_type == EventType.STAT_CHANGE:
+        body_style = "blue"
+    elif event.event_type == EventType.RECOIL:
+        body_style = "red"
+    elif event.event_type in (EventType.DRAIN, EventType.HEAL):
+        body_style = "green"
+    elif event.event_type == EventType.ITEM_USED:
+        body_style = "cyan"
+
+    line.append(event.message, style=body_style)
+    if event.event_type == EventType.DAMAGE and event.damage:
+        line.append(f"   {event.damage} damage", style="bold")
+    return line
+
+
 def show_battle_state(player: Pokemon, opponent: Pokemon, turn: int, opponent_name: str = "Opponent"):
     console.print(f"\n--- Turn {turn} ---", style="bold")
     opp_hp_bar = _hp_bar(opponent.current_hp, opponent.max_hp)

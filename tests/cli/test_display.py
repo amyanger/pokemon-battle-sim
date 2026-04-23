@@ -143,3 +143,39 @@ def test_team_dots_short_team_pads_to_six():
     out = _render(_team_dots(team, active_index=0))
     total_dots = out.count("●") + out.count("○")
     assert total_dots == 6
+
+
+from src.engine.battle import BattleEvent, EventType
+from src.cli.display import _event_line
+
+
+def test_event_line_damage_has_damage_suffix():
+    ev = BattleEvent(event_type=EventType.DAMAGE, message="Dark Pulse hit!", damage=84)
+    out = _render(_event_line(ev))
+    assert "Dark Pulse hit!" in out
+    assert "84" in out
+
+
+def test_event_line_effectiveness_super():
+    ev = BattleEvent(
+        event_type=EventType.EFFECTIVENESS,
+        message="It's super effective!",
+        effectiveness=2.0,
+    )
+    out = _render(_event_line(ev))
+    assert "super effective" in out
+
+
+def test_event_line_item_used():
+    ev = BattleEvent(
+        event_type=EventType.ITEM_USED,
+        message="Cynthia used a Full Restore!",
+    )
+    out = _render(_event_line(ev))
+    assert "Full Restore" in out
+
+
+def test_event_line_starts_with_bullet():
+    ev = BattleEvent(event_type=EventType.FAINT, message="Garchomp fainted!")
+    out = _render(_event_line(ev))
+    assert "▸" in out
