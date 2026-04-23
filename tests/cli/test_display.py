@@ -71,3 +71,50 @@ def test_hp_bar_overflow_clamps():
     output = _render(_hp_bar(300, 280, width=24))
     assert output.count("█") == 24
     assert "░" not in output
+
+
+from src.engine.pokemon import Pokemon, Status
+from src.cli.display import _status_text, _stages_text
+
+
+def _make_pokemon(**overrides) -> Pokemon:
+    defaults = dict(
+        name="darkrai",
+        types=["dark"],
+        level=100,
+        base_stats={"hp": 70, "attack": 90, "defense": 90,
+                    "sp_attack": 135, "sp_defense": 90, "speed": 125},
+        moves=[],
+        ability="bad-dreams",
+        item=None,
+    )
+    defaults.update(overrides)
+    return Pokemon(**defaults)
+
+
+def test_status_text_none_is_dash():
+    assert "—" in _render(_status_text(Status.NONE))
+
+
+def test_status_text_burn_shows_brn():
+    assert "BRN" in _render(_status_text(Status.BURN))
+
+
+def test_status_text_bad_poison_shows_tox():
+    assert "TOX" in _render(_status_text(Status.BAD_POISON))
+
+
+def test_stages_text_all_zero_is_dash():
+    poke = _make_pokemon()
+    assert "—" in _render(_stages_text(poke))
+
+
+def test_stages_text_shows_nonzero_only():
+    poke = _make_pokemon()
+    poke.stat_stages["attack"] = 2
+    poke.stat_stages["speed"] = -1
+    out = _render(_stages_text(poke))
+    assert "Atk +2" in out
+    assert "Spe -1" in out
+    assert "Def" not in out
+    assert "SpA" not in out

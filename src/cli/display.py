@@ -66,18 +66,44 @@ def _hp_bar(current: int, maximum: int, width: int = 24) -> Text:
     return bar
 
 
-def _status_text(status: Status) -> str:
+_STATUS_LABELS: dict[Status, tuple[str, str]] = {
+    Status.BURN: ("BRN", "red"),
+    Status.FREEZE: ("FRZ", "cyan"),
+    Status.PARALYSIS: ("PAR", "yellow"),
+    Status.POISON: ("PSN", "magenta"),
+    Status.BAD_POISON: ("TOX", "magenta"),
+    Status.SLEEP: ("SLP", "dim"),
+}
+
+
+def _status_text(status: Status) -> Text:
     if status == Status.NONE:
-        return ""
-    labels = {
-        Status.BURN: "[red]BRN[/red]",
-        Status.FREEZE: "[cyan]FRZ[/cyan]",
-        Status.PARALYSIS: "[yellow]PAR[/yellow]",
-        Status.POISON: "[magenta]PSN[/magenta]",
-        Status.BAD_POISON: "[magenta]TOX[/magenta]",
-        Status.SLEEP: "[dim]SLP[/dim]",
-    }
-    return labels.get(status, "")
+        return Text("—", style="dim")
+    label, style = _STATUS_LABELS[status]
+    return Text(label, style=f"bold {style}")
+
+
+_STAGE_LABELS: dict[str, str] = {
+    "attack": "Atk",
+    "defense": "Def",
+    "sp_attack": "SpA",
+    "sp_defense": "SpD",
+    "speed": "Spe",
+}
+
+
+def _stages_text(pokemon) -> Text:
+    parts: list[str] = []
+    for stat, label in _STAGE_LABELS.items():
+        val = pokemon.stat_stages.get(stat, 0)
+        if val == 0:
+            continue
+        sign = "+" if val > 0 else ""
+        parts.append(f"{label} {sign}{val}")
+    if not parts:
+        return Text("—", style="dim")
+    style = "blue" if any("+" in p for p in parts) else "yellow"
+    return Text("  ".join(parts), style=style)
 
 
 def show_battle_state(player: Pokemon, opponent: Pokemon, turn: int, opponent_name: str = "Opponent"):
