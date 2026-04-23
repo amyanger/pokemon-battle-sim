@@ -179,3 +179,31 @@ def test_event_line_starts_with_bullet():
     ev = BattleEvent(event_type=EventType.FAINT, message="Garchomp fainted!")
     out = _render(_event_line(ev))
     assert "▸" in out
+
+
+from src.cli.display import _pokemon_card
+
+
+def test_pokemon_card_has_name_level_and_types():
+    poke = _make_pokemon(name="garchomp", types=["dragon", "ground"], level=100)
+    out = _render(_pokemon_card(poke))
+    assert "Garchomp" in out
+    assert "Lv100" in out
+    assert "DRAGON" in out
+    assert "GROUND" in out
+
+
+def test_pokemon_card_has_hp_bar():
+    poke = _make_pokemon()
+    out = _render(_pokemon_card(poke))
+    assert "█" in out
+    assert "100%" in out
+
+
+def test_pokemon_card_shows_status_and_stages():
+    poke = _make_pokemon()
+    poke.status = Status.BURN
+    poke.stat_stages["attack"] = 1
+    out = _render(_pokemon_card(poke))
+    assert "BRN" in out
+    assert "Atk +1" in out

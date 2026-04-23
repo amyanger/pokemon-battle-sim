@@ -3,6 +3,7 @@ from rich.console import Console
 from rich.text import Text
 from rich.panel import Panel
 from rich.table import Table
+from rich import box
 from src.engine.pokemon import Pokemon, Status
 from src.engine.battle import BattleEvent, EventType
 
@@ -161,6 +162,33 @@ def _event_line(event: BattleEvent) -> Text:
     if event.event_type == EventType.DAMAGE and event.damage:
         line.append(f"   {event.damage} damage", style="bold")
     return line
+
+
+def _pokemon_card(pokemon: Pokemon) -> Panel:
+    header = Text()
+    header.append(pokemon.name.title(), style="bold")
+    header.append(f"   Lv{pokemon.level}   ", style="dim")
+    for i, t in enumerate(pokemon.types):
+        if i > 0:
+            header.append(" ")
+        header.append_text(_type_badge(t))
+
+    hp_line = Text("HP ", style="dim")
+    hp_line.append_text(_hp_bar(pokemon.current_hp, pokemon.max_hp))
+
+    meta_line = Text("Status ", style="dim")
+    meta_line.append_text(_status_text(pokemon.status))
+    meta_line.append("     Stages ", style="dim")
+    meta_line.append_text(_stages_text(pokemon))
+
+    body = Text()
+    body.append_text(header)
+    body.append("\n")
+    body.append_text(hp_line)
+    body.append("\n")
+    body.append_text(meta_line)
+
+    return Panel(body, box=box.SQUARE, padding=(0, 1), expand=True)
 
 
 def show_battle_state(player: Pokemon, opponent: Pokemon, turn: int, opponent_name: str = "Opponent"):
