@@ -228,14 +228,14 @@ def show_move_menu(pokemon: Pokemon, can_switch: bool = True) -> None:
         row.append("  ")
         row.append_text(_type_badge(move.type))
         row.append("   ")
-        pow_str = f"Pow {move.power}" if move.power > 0 else "—"
+        pow_str = f"Pow {move.power:>3}" if move.power > 0 else "—     "
         row.append(pow_str)
         row.append("   ")
-        acc_str = f"Acc {move.accuracy}" if move.accuracy > 0 else "—"
+        acc_str = f"Acc {move.accuracy:>3}" if move.accuracy > 0 else "—     "
         row.append(acc_str)
         row.append("   ")
         pp_color = "green" if move.current_pp > move.pp // 4 else "red"
-        row.append(f"{move.current_pp}/{move.pp}", style=pp_color)
+        row.append(f"{move.current_pp:>2}/{move.pp:<2}", style=pp_color)
         body.append_text(row)
         if i < len(pokemon.moves) - 1:
             body.append("\n")

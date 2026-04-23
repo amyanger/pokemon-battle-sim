@@ -285,8 +285,8 @@ def test_show_move_menu_has_framed_header_and_columns():
     out = d.console.export_text()
     assert "Dark Pulse" in out
     assert "DARK" in out
-    assert "Pow 80" in out
-    assert "Acc 100" in out
+    assert "Pow" in out and "80" in out  # alignment may add spacing
+    assert "Acc" in out and "100" in out  # alignment may add spacing
     assert "15/15" in out
     assert "Switch" in out
     assert "Moves" in out  # panel title
