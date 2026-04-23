@@ -11,8 +11,8 @@ from src.ai.memory import BattleMemory, TurnRecord
 from src.ai.opponent_model import OpponentModel
 from src.ai.personality import get_champion_personality, PROFILES
 from src.cli.display import (
-    show_battle_state, show_move_menu, show_switch_menu,
-    show_events, show_battle_result,
+    show_turn, show_move_menu, show_switch_menu,
+    show_battle_result,
 )
 from src.cli.team_builder import build_player_team, build_opponent_team
 

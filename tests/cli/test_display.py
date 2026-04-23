@@ -213,3 +213,49 @@ def test_pokemon_card_multi_type_badges_are_space_separated():
     poke = _make_pokemon(name="garchomp", types=["dragon", "ground"])
     out = _render(_pokemon_card(poke))
     assert "] [" in out
+
+
+from src.engine.battle import Battle
+from src.cli.display import show_turn
+
+
+def _make_team(size: int = 6) -> list:
+    return [_make_pokemon(name=f"mon{i}") for i in range(size)]
+
+
+def test_show_turn_renders_turn_number_and_both_cards():
+    battle = Battle(_make_team(), _make_team())
+    battle.turn_count = 3
+    import src.cli.display as d
+    d.console = Console(record=True, width=100, force_terminal=True)
+    show_turn(battle, opponent_name="Cynthia", events=[])
+    out = d.console.export_text()
+    assert "Turn 3" in out
+    assert "CYNTHIA" in out
+    assert "YOU" in out
+    assert out.count("█") > 0
+
+
+def test_show_turn_renders_team_dots_for_both_sides():
+    battle = Battle(_make_team(), _make_team())
+    battle.opponent_team[2].current_hp = 0
+    import src.cli.display as d
+    d.console = Console(record=True, width=100, force_terminal=True)
+    show_turn(battle, opponent_name="Cynthia", events=[])
+    out = d.console.export_text()
+    assert out.count("●") + out.count("○") == 12
+
+
+def test_show_turn_renders_events_with_bullets():
+    battle = Battle(_make_team(), _make_team())
+    events = [
+        BattleEvent(event_type=EventType.DAMAGE, message="Dark Pulse hit!", damage=84),
+        BattleEvent(event_type=EventType.FAINT, message="Mon2 fainted!"),
+    ]
+    import src.cli.display as d
+    d.console = Console(record=True, width=100, force_terminal=True)
+    show_turn(battle, opponent_name="Cynthia", events=events)
+    out = d.console.export_text()
+    assert "Events" in out
+    assert out.count("▸") == 2
+    assert "84 damage" in out

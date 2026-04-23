@@ -1,4 +1,5 @@
 from __future__ import annotations
+from io import StringIO
 from rich.console import Console
 from rich.text import Text
 from rich.panel import Panel
@@ -191,20 +192,45 @@ def _pokemon_card(pokemon: Pokemon) -> Panel:
     return Panel(body, box=box.SQUARE, padding=(0, 1), expand=True)
 
 
-def show_battle_state(player: Pokemon, opponent: Pokemon, turn: int, opponent_name: str = "Opponent"):
-    console.print(f"\n--- Turn {turn} ---", style="bold")
-    opp_hp_bar = _hp_bar(opponent.current_hp, opponent.max_hp)
-    opp_status = _status_text(opponent.status)
-    console.print(f"  {opponent_name}'s {opponent.name.title()} Lv{opponent.level} {opp_status}")
-    console.print(f"  ", end="")
-    console.print(opp_hp_bar)
-    console.print()
-    p_hp_bar = _hp_bar(player.current_hp, player.max_hp)
-    p_status = _status_text(player.status)
-    console.print(f"  Your {player.name.title()} Lv{player.level} {p_status}")
-    console.print(f"  ", end="")
-    console.print(p_hp_bar)
-    console.print()
+def show_turn(battle, opponent_name: str, events: list[BattleEvent]) -> None:
+    opponent_dots = _team_dots(battle.opponent_team, battle.opponent_active)
+    player_dots = _team_dots(battle.player_team, battle.player_active)
+
+    body = Text()
+
+    opp_header = Text()
+    opp_header.append(opponent_name.upper(), style="bold red")
+    opp_header.append("   ")
+    opp_header.append_text(opponent_dots)
+    body.append_text(opp_header)
+    body.append("\n")
+
+    tmp = Console(file=StringIO(), width=max(40, console.width - 6), force_terminal=True)
+    tmp.print(_pokemon_card(battle.opponent_pokemon))
+    body.append(tmp.file.getvalue().rstrip("\n"))
+
+    body.append("\n\n")
+    player_header = Text()
+    player_header.append("YOU", style="bold green")
+    player_header.append("        ")
+    player_header.append_text(player_dots)
+    body.append_text(player_header)
+    body.append("\n")
+
+    tmp2 = Console(file=StringIO(), width=max(40, console.width - 6), force_terminal=True)
+    tmp2.print(_pokemon_card(battle.player_pokemon))
+    body.append(tmp2.file.getvalue().rstrip("\n"))
+
+    if events:
+        body.append("\n\n")
+        body.append(Text("Events", style="bold underline"))
+        body.append("\n")
+        for i, ev in enumerate(events):
+            body.append_text(_event_line(ev))
+            if i < len(events) - 1:
+                body.append("\n")
+
+    console.print(Panel(body, title=f"Turn {battle.turn_count}", box=box.ROUNDED, padding=(0, 1), expand=False))
 
 
 def show_move_menu(pokemon: Pokemon, can_switch: bool = True):
@@ -234,43 +260,6 @@ def show_switch_menu(team: list[Pokemon], active_index: int):
             console.print(hp_bar)
     console.print(f"    0. Back")
     console.print()
-
-
-def show_events(events: list[BattleEvent]):
-    for event in events:
-        if event.event_type == EventType.DAMAGE:
-            console.print(f"  {event.message} ({event.damage} damage)")
-        elif event.event_type == EventType.EFFECTIVENESS:
-            if event.effectiveness > 1.0:
-                console.print(f"  [green]{event.message}[/green]")
-            elif event.effectiveness == 0.0:
-                console.print(f"  [dim]{event.message}[/dim]")
-            else:
-                console.print(f"  [yellow]{event.message}[/yellow]")
-        elif event.event_type == EventType.CRITICAL:
-            console.print(f"  [bold yellow]{event.message}[/bold yellow]")
-        elif event.event_type == EventType.FAINT:
-            console.print(f"  [red]{event.message}[/red]")
-        elif event.event_type == EventType.SWITCH:
-            console.print(f"  [cyan]{event.message}[/cyan]")
-        elif event.event_type == EventType.CANT_ACT:
-            console.print(f"  [dim]{event.message}[/dim]")
-        elif event.event_type == EventType.END_OF_TURN:
-            console.print(f"  [magenta]{event.message}[/magenta]")
-        elif event.event_type == EventType.MISS:
-            console.print(f"  [dim]{event.message}[/dim]")
-        elif event.event_type == EventType.STATUS:
-            console.print(f"  [yellow]{event.message}[/yellow]")
-        elif event.event_type == EventType.STAT_CHANGE:
-            console.print(f"  [blue]{event.message}[/blue]")
-        elif event.event_type == EventType.RECOIL:
-            console.print(f"  [red]{event.message}[/red]")
-        elif event.event_type == EventType.DRAIN:
-            console.print(f"  [green]{event.message}[/green]")
-        elif event.event_type == EventType.HEAL:
-            console.print(f"  [green]{event.message}[/green]")
-        else:
-            console.print(f"  {event.message}")
 
 
 def show_battle_result(winner: str, turn_count: int, player_fainted: int, opponent_fainted: int,
