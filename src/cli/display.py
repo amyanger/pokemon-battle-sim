@@ -53,10 +53,16 @@ def _hp_bar(current: int, maximum: int, width: int = 24) -> Text:
     filled = int(round(pct * width))
     filled = max(0, min(width, filled))
     color = _hp_color(pct)
+    if current <= 0:
+        display_pct = 0
+    elif current >= maximum:
+        display_pct = 100
+    else:
+        display_pct = max(1, min(99, int(round(pct * 100))))
     bar = Text()
     bar.append("█" * filled, style=color)
     bar.append("░" * (width - filled), style="dim")
-    bar.append(f"  {current} / {maximum}   {int(pct * 100)}%")
+    bar.append(f"  {current} / {maximum}   {display_pct}%")
     return bar
 
 

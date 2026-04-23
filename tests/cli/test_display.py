@@ -57,3 +57,17 @@ def test_hp_bar_half_is_half_filled():
     assert output.count("█") == 12
     assert output.count("░") == 12
     assert "50%" in output
+
+
+def test_hp_bar_near_full_is_not_shown_as_100():
+    # 279/280 — bar rounds to full, but % must not claim 100 because the
+    # mon is not actually at full HP.
+    output = _render(_hp_bar(279, 280, width=24))
+    assert "100%" not in output
+    assert "99%" in output
+
+
+def test_hp_bar_overflow_clamps():
+    output = _render(_hp_bar(300, 280, width=24))
+    assert output.count("█") == 24
+    assert "░" not in output
