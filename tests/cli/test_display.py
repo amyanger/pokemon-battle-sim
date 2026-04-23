@@ -118,3 +118,28 @@ def test_stages_text_shows_nonzero_only():
     assert "Spe -1" in out
     assert "Def" not in out
     assert "SpA" not in out
+
+
+from src.cli.display import _team_dots
+
+
+def test_team_dots_all_alive_six_filled():
+    team = [_make_pokemon() for _ in range(6)]
+    out = _render(_team_dots(team, active_index=0))
+    assert out.count("●") == 6
+    assert "○" not in out
+
+
+def test_team_dots_one_fainted():
+    team = [_make_pokemon() for _ in range(6)]
+    team[3].current_hp = 0
+    out = _render(_team_dots(team, active_index=0))
+    assert out.count("●") == 5
+    assert out.count("○") == 1
+
+
+def test_team_dots_short_team_pads_to_six():
+    team = [_make_pokemon() for _ in range(3)]
+    out = _render(_team_dots(team, active_index=0))
+    total_dots = out.count("●") + out.count("○")
+    assert total_dots == 6

@@ -106,6 +106,25 @@ def _stages_text(pokemon: Pokemon) -> Text:
     return Text("  ".join(parts), style=style)
 
 
+def _team_dots(team: list[Pokemon], active_index: int) -> Text:
+    out = Text()
+    for i in range(6):
+        if i > 0:
+            out.append(" ")
+        if i >= len(team):
+            out.append("○", style="dim")
+            continue
+        poke = team[i]
+        if not poke.is_alive:
+            out.append("○", style="dim")
+            continue
+        pct = poke.current_hp / max(poke.max_hp, 1)
+        color = _hp_color(pct)
+        style = f"bold {color}" if i == active_index else color
+        out.append("●", style=style)
+    return out
+
+
 def show_battle_state(player: Pokemon, opponent: Pokemon, turn: int, opponent_name: str = "Opponent"):
     console.print(f"\n--- Turn {turn} ---", style="bold")
     opp_hp_bar = _hp_bar(opponent.current_hp, opponent.max_hp)
