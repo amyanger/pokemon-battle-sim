@@ -310,3 +310,42 @@ def test_show_move_menu_status_move_shows_dashes_for_power():
     assert "Nasty Plot" in out
     # power 0 and accuracy 0 should render as em dashes
     assert "—" in out
+
+
+from src.cli.display import show_switch_menu
+
+
+def test_show_switch_menu_lists_other_members_with_hp_bars():
+    team = [_make_pokemon(name=f"mon{i}") for i in range(3)]
+    import src.cli.display as d
+    d.console = Console(record=True, width=100, force_terminal=True)
+    show_switch_menu(team, active_index=0)
+    out = d.console.export_text()
+    # active pokemon not in list
+    assert "1. Mon0" not in out
+    # other pokemon present
+    assert "Mon1" in out
+    assert "Mon2" in out
+    # hp bar blocks rendered for alive
+    assert out.count("█") > 0
+    # back row present
+    assert "0. Back" in out
+
+
+def test_show_switch_menu_marks_fainted():
+    team = [_make_pokemon(name=f"mon{i}") for i in range(3)]
+    team[1].current_hp = 0
+    import src.cli.display as d
+    d.console = Console(record=True, width=100, force_terminal=True)
+    show_switch_menu(team, active_index=0)
+    out = d.console.export_text()
+    assert "(fainted)" in out
+
+
+def test_show_switch_menu_panel_title():
+    team = [_make_pokemon(name=f"mon{i}") for i in range(2)]
+    import src.cli.display as d
+    d.console = Console(record=True, width=100, force_terminal=True)
+    show_switch_menu(team, active_index=0)
+    out = d.console.export_text()
+    assert "Switch" in out

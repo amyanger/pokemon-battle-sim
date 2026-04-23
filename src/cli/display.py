@@ -248,19 +248,28 @@ def show_move_menu(pokemon: Pokemon, can_switch: bool = True) -> None:
     console.print(Panel(body, title=title, box=box.ROUNDED, padding=(0, 1), expand=False))
 
 
-def show_switch_menu(team: list[Pokemon], active_index: int):
-    console.print("  Choose a Pokemon:", style="bold")
+def show_switch_menu(team: list[Pokemon], active_index: int) -> None:
+    body = Text()
+    shown = 0
     for i, poke in enumerate(team):
         if i == active_index:
             continue
+        if shown > 0:
+            body.append("\n")
+        shown += 1
+        row = Text()
+        row.append(f"  {i + 1}. ", style="bold")
+        row.append(f"{poke.name.title():12s}  ")
         if not poke.is_alive:
-            console.print(f"    {i + 1}. {poke.name.title()} [red](fainted)[/red]")
+            row.append("(fainted)", style="red")
         else:
-            hp_bar = _hp_bar(poke.current_hp, poke.max_hp)
-            console.print(f"    {i + 1}. {poke.name.title()} ", end="")
-            console.print(hp_bar)
-    console.print(f"    0. Back")
-    console.print()
+            row.append_text(_hp_bar(poke.current_hp, poke.max_hp, width=16))
+            row.append("  ")
+            row.append_text(_status_text(poke.status))
+        body.append_text(row)
+    body.append("\n\n")
+    body.append("  0. Back", style="dim")
+    console.print(Panel(body, title="Switch Pokémon", box=box.ROUNDED, padding=(0, 1), expand=False))
 
 
 def show_battle_result(winner: str, turn_count: int, player_fainted: int, opponent_fainted: int,
