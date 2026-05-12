@@ -1,3 +1,4 @@
+import pytest
 from src.data.champion_loader import TrainerEntry
 from src.cli.team_builder import _resolve_trainer_selection
 
@@ -31,3 +32,9 @@ def test_resolve_picks_correct_trainer_by_index():
         _make_entry("Gardenia", with_rematch=True),
     ]
     assert _resolve_trainer_selection(trainers, trainer_choice=2, variant_choice=2) == "file_gardenia_rematch"
+
+
+def test_resolve_raises_when_variant_choice_missing_for_multi_variant():
+    trainers = [_make_entry("Roark", with_rematch=True)]
+    with pytest.raises(ValueError, match="variant_choice is required"):
+        _resolve_trainer_selection(trainers, trainer_choice=1, variant_choice=None)

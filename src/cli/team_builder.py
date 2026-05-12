@@ -1,7 +1,7 @@
 from __future__ import annotations
 from rich.console import Console
 from src.data.pokeapi_client import PokeAPIClient
-from src.data.champion_loader import ChampionLoader, ChampionTeam, TrainerEntry
+from src.data.champion_loader import ChampionLoader, TrainerEntry
 from src.engine.pokemon import Pokemon
 import random
 
@@ -175,6 +175,11 @@ def _resolve_trainer_selection(
     trainer = trainers[trainer_choice - 1]
     if len(trainer.variants) == 1:
         return trainer.variants[0][1]
+    if variant_choice is None:
+        raise ValueError(
+            f"variant_choice is required when trainer has multiple variants "
+            f"(got {len(trainer.variants)} variants for {trainer.display_name!r})"
+        )
     return trainer.variants[variant_choice - 1][1]
 
 
