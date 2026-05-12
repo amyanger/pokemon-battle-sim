@@ -30,11 +30,22 @@ PROFILES: dict[str, Personality] = {
 }
 
 _CHAMPION_PERSONALITIES: dict[str, str] = {
-    "Cynthia": "tactical",
-    "Aaron": "balanced",
-    "Bertha": "defensive",
-    "Flint": "aggressive",
-    "Lucian": "tactical",
+    # Gym Leaders
+    "Roark":    "defensive",
+    "Gardenia": "aggressive",
+    "Fantina":  "tactical",
+    "Maylene":  "aggressive",
+    "Wake":     "balanced",
+    "Byron":    "defensive",
+    "Candice":  "aggressive",
+    "Volkner":  "tactical",
+    # Elite Four
+    "Aaron":    "balanced",
+    "Bertha":   "defensive",
+    "Flint":    "aggressive",
+    "Lucian":   "tactical",
+    # Champion
+    "Cynthia":  "tactical",
 }
 
 

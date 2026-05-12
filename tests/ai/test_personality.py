@@ -33,3 +33,19 @@ def test_apply_weights():
     weighted = p.apply_weights(scores)
     assert weighted["damage_value"] == 10 * p.damage_weight
     assert weighted["setup_value"] == 8 * p.setup_weight
+
+
+def test_champion_personality_covers_all_gym_leaders():
+    expected = {
+        "Roark":    "defensive",
+        "Gardenia": "aggressive",
+        "Fantina":  "tactical",
+        "Maylene":  "aggressive",
+        "Wake":     "balanced",
+        "Byron":    "defensive",
+        "Candice":  "aggressive",
+        "Volkner":  "tactical",
+    }
+    for name, profile in expected.items():
+        assert get_champion_personality(name).name == profile, \
+            f"{name} should map to '{profile}' (got '{get_champion_personality(name).name}')"
