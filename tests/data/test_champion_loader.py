@@ -36,6 +36,7 @@ def test_constant_to_api_name():
     assert _constant_to_api_name("ITEM_FULL_RESTORE") == "full-restore"
     assert _constant_to_api_name("ITEM_SITRUS_BERRY") == "sitrus-berry"
     assert _constant_to_api_name("ITEM_NONE") is None
+    assert _constant_to_api_name(None) is None
 
 def test_list_champions_includes_all_gym_leaders():
     loader = ChampionLoader()
@@ -60,3 +61,4 @@ def test_load_roark():
     assert len(team.party) >= 2  # Roark has Geodude + Onix + Cranidos
     assert team.party[0].species == "geodude"
     assert team.party[0].level == 12
+    assert team.party[2].species == "cranidos"
