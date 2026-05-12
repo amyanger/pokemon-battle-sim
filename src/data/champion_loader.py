@@ -7,8 +7,24 @@ from pathlib import Path
 _DECOMP_TRAINERS_PATH = Path("/mnt/c/Users/arjun.myanger/development/pokeplatinum/res/trainers/data")
 
 _CHAMPION_FILES = [
-    "champion_cynthia",
-    "champion_cynthia_rematch",
+    # Gym Leaders (canon progression order)
+    "leader_roark",
+    "leader_roark_rematch",
+    "leader_gardenia",
+    "leader_gardenia_rematch",
+    "leader_fantina",
+    "leader_fantina_rematch",
+    "leader_maylene",
+    "leader_maylene_rematch",
+    "leader_wake",
+    "leader_wake_rematch",
+    "leader_byron",
+    "leader_byron_rematch",
+    "leader_candice",
+    "leader_candice_rematch",
+    "leader_volkner",
+    "leader_volkner_rematch",
+    # Elite Four
     "elite_four_aaron",
     "elite_four_aaron_rematch",
     "elite_four_bertha",
@@ -17,17 +33,21 @@ _CHAMPION_FILES = [
     "elite_four_flint_rematch",
     "elite_four_lucian",
     "elite_four_lucian_rematch",
+    # Champion
+    "champion_cynthia",
+    "champion_cynthia_rematch",
 ]
 
 
-def _constant_to_api_name(constant: str) -> str | None:
+def _constant_to_api_name(constant: str | None) -> str | None:
     """Convert decompilation constants to PokeAPI-compatible names.
     SPECIES_GARCHOMP -> garchomp
     MOVE_DARK_PULSE -> dark-pulse
     ITEM_SITRUS_BERRY -> sitrus-berry
     ITEM_NONE -> None
+    None -> None
     """
-    if constant == "ITEM_NONE":
+    if constant is None or constant == "ITEM_NONE":
         return None
     # Strip prefix (SPECIES_, MOVE_, ITEM_)
     parts = constant.split("_", 1)
