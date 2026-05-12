@@ -1,7 +1,7 @@
 from __future__ import annotations
 from rich.console import Console
 from src.data.pokeapi_client import PokeAPIClient
-from src.data.champion_loader import ChampionLoader, ChampionTeam
+from src.data.champion_loader import ChampionLoader, ChampionTeam, TrainerEntry
 from src.engine.pokemon import Pokemon
 import random
 
@@ -32,22 +32,24 @@ def build_player_team(client: PokeAPIClient) -> list[Pokemon]:
 def build_opponent_team(client: PokeAPIClient) -> tuple[str, list[Pokemon], list[str]]:
     """Returns (trainer_name, team, trainer_items)."""
     loader = ChampionLoader()
-    champions = loader.list_champions()
+    trainers = loader.list_trainers()
 
     console.print("\n[bold]Choose your opponent:[/bold]")
-    for i, champ in enumerate(champions):
-        display_name = champ.replace("_", " ").title()
-        console.print(f"  {i + 1}. {display_name}")
-    console.print(f"  {len(champions) + 1}. Random team")
+    for i, t in enumerate(trainers):
+        console.print(f"  {i + 1}. {t.display_name} ({t.role})")
+    console.print(f"  {len(trainers) + 1}. Random team")
     console.print()
 
-    choice = _prompt_choice(1, len(champions) + 1)
+    trainer_choice = _prompt_choice(1, len(trainers) + 1)
 
-    if choice == len(champions) + 1:
+    if trainer_choice == len(trainers) + 1:
         team = [client.get_random_pokemon(level=100) for _ in range(6)]
         return "Random Trainer", team, []
 
-    champ_data = loader.load_champion(champions[choice - 1])
+    variant_choice = _prompt_variant(trainers[trainer_choice - 1])
+    filename = _resolve_trainer_selection(trainers, trainer_choice, variant_choice)
+
+    champ_data = loader.load_champion(filename)
     team = _build_champion_team(client, champ_data)
     return champ_data.name, team, champ_data.items
 
@@ -128,12 +130,18 @@ def _full_manual(client: PokeAPIClient) -> list[Pokemon]:
 
 def _champion_preset(client: PokeAPIClient) -> list[Pokemon]:
     loader = ChampionLoader()
-    champions = loader.list_champions()
+    trainers = loader.list_trainers()
+
     console.print("\n  Pick a champion's team to use:")
-    for i, champ in enumerate(champions):
-        console.print(f"    {i + 1}. {champ.replace('_', ' ').title()}")
-    choice = _prompt_choice(1, len(champions))
-    champ_data = loader.load_champion(champions[choice - 1])
+    for i, t in enumerate(trainers):
+        console.print(f"    {i + 1}. {t.display_name} ({t.role})")
+    console.print()
+
+    trainer_choice = _prompt_choice(1, len(trainers))
+    variant_choice = _prompt_variant(trainers[trainer_choice - 1])
+    filename = _resolve_trainer_selection(trainers, trainer_choice, variant_choice)
+
+    champ_data = loader.load_champion(filename)
     return _build_champion_team(client, champ_data)
 
 
@@ -151,6 +159,34 @@ def _build_champion_team(client: PokeAPIClient, champ: ChampionTeam) -> list[Pok
             pokemon.item = member.item
         team.append(pokemon)
     return team
+
+
+def _resolve_trainer_selection(
+    trainers: list[TrainerEntry],
+    trainer_choice: int,
+    variant_choice: int | None,
+) -> str:
+    """Pure selection logic — given user choices, return the chosen JSON filename.
+
+    trainer_choice is 1-indexed into `trainers`.
+    variant_choice is 1-indexed into the trainer's variants, or None when the trainer
+    has only one variant (in which case it's auto-selected).
+    """
+    trainer = trainers[trainer_choice - 1]
+    if len(trainer.variants) == 1:
+        return trainer.variants[0][1]
+    return trainer.variants[variant_choice - 1][1]
+
+
+def _prompt_variant(trainer: TrainerEntry) -> int | None:
+    """Prompt for base vs rematch when a trainer has multiple variants. Returns None for single-variant trainers."""
+    if len(trainer.variants) == 1:
+        return None
+    console.print(f"\n[bold]{trainer.display_name}: which version?[/bold]")
+    for i, (label, _filename) in enumerate(trainer.variants):
+        console.print(f"  {i + 1}. {label}")
+    console.print()
+    return _prompt_choice(1, len(trainer.variants))
 
 
 def _prompt_choice(low: int, high: int) -> int:
