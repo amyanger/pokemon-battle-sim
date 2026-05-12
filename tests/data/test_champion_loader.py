@@ -1,3 +1,6 @@
+import json
+from pathlib import Path
+
 from src.data.champion_loader import ChampionLoader, _constant_to_api_name
 
 
@@ -62,3 +65,52 @@ def test_load_roark():
     assert team.party[0].species == "geodude"
     assert team.party[0].level == 12
     assert team.party[2].species == "cranidos"
+
+def test_list_trainers_groups_base_and_rematch():
+    loader = ChampionLoader()
+    trainers = loader.list_trainers()
+
+    by_name = {t.display_name: t for t in trainers}
+    assert "Roark" in by_name
+    roark = by_name["Roark"]
+    assert roark.role == "Gym Leader"
+    variant_labels = [label for label, _filename in roark.variants]
+    variant_files = [filename for _label, filename in roark.variants]
+    assert variant_labels == ["base", "rematch"]
+    assert variant_files == ["leader_roark", "leader_roark_rematch"]
+
+def test_list_trainers_canon_order():
+    loader = ChampionLoader()
+    names = [t.display_name for t in loader.list_trainers()]
+    expected = [
+        "Roark", "Gardenia", "Fantina", "Maylene",
+        "Wake", "Byron", "Candice", "Volkner",
+        "Aaron", "Bertha", "Flint", "Lucian",
+        "Cynthia",
+    ]
+    assert names == expected
+
+def test_list_trainers_filters_missing_files(tmp_path: Path):
+    # Only create two synthetic trainer files: Roark base (no rematch) and Cynthia rematch (no base).
+    def write(name: str, display: str):
+        (tmp_path / f"{name}.json").write_text(json.dumps({
+            "name": display, "class": "X", "party": [], "items": [], "ai_flags": [],
+        }))
+
+    write("leader_roark", "Roark")
+    write("champion_cynthia_rematch", "Cynthia")
+
+    loader = ChampionLoader(trainers_path=tmp_path)
+    trainers = loader.list_trainers()
+    by_name = {t.display_name: t for t in trainers}
+
+    # Only Roark and Cynthia appear; everyone else is filtered out.
+    assert set(by_name.keys()) == {"Roark", "Cynthia"}
+
+    # Roark has only base.
+    roark_labels = [label for label, _ in by_name["Roark"].variants]
+    assert roark_labels == ["base"]
+
+    # Cynthia has only rematch.
+    cynthia_labels = [label for label, _ in by_name["Cynthia"].variants]
+    assert cynthia_labels == ["rematch"]
