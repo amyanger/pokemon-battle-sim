@@ -13,7 +13,7 @@ A Python CLI Pokemon battle simulator featuring an improved AI system inspired b
 - Scoped to Gen 4 data (national dex #1-493)
 
 ### Champion Data Loader (`src/data/champion_loader.py`)
-- Reads JSON trainer files from the pokeplatinum decompilation repo at `/mnt/c/Users/arjun.myanger/development/pokeplatinum/res/trainers/data/`
+- Reads JSON trainer files from the pokeplatinum decompilation repo at `~/development/pokeplatinum/res/trainers/data/`
 - Parses teams: Pokemon, moves, items, levels
 - Maps game-internal constants (move names, item names) to PokeAPI-compatible identifiers
 - Launch champions: Cynthia, Aaron, Bertha, Flint, Lucian (Platinum Elite Four + Champion)
@@ -166,4 +166,4 @@ pokemon-battle-sim/
 
 ## Data Sources
 - **PokeAPI** (https://pokeapi.co/) — Pokemon stats, moves, types, learnsets, abilities
-- **pokeplatinum decompilation** (`/mnt/c/Users/arjun.myanger/development/pokeplatinum/res/trainers/data/`) — canonical champion teams
+- **pokeplatinum decompilation** (`~/development/pokeplatinum/res/trainers/data/`) — canonical champion teams

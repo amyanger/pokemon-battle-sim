@@ -94,7 +94,7 @@ Create empty `__init__.py` files at:
 - [ ] **Step 3: Install dependencies**
 
 ```bash
-cd /mnt/c/Users/arjun.myanger/development/pokemon-battle-sim
+cd ~/development/pokemon-battle-sim
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -e ".[dev]"
@@ -102,7 +102,7 @@ pip install -e ".[dev]"
 
 - [ ] **Step 4: Verify pytest runs**
 
-Run: `cd /mnt/c/Users/arjun.myanger/development/pokemon-battle-sim && source .venv/bin/activate && python -m pytest --co -q`
+Run: `cd ~/development/pokemon-battle-sim && source .venv/bin/activate && python -m pytest --co -q`
 Expected: "no tests ran" (no errors)
 
 - [ ] **Step 5: Commit**
@@ -217,7 +217,7 @@ def test_stat_stages():
 
 - [ ] **Step 2: Run tests to verify they fail**
 
-Run: `cd /mnt/c/Users/arjun.myanger/development/pokemon-battle-sim && source .venv/bin/activate && python -m pytest tests/engine/test_pokemon.py -v`
+Run: `cd ~/development/pokemon-battle-sim && source .venv/bin/activate && python -m pytest tests/engine/test_pokemon.py -v`
 Expected: FAIL with ImportError
 
 - [ ] **Step 3: Implement Pokemon model**
@@ -351,7 +351,7 @@ class Pokemon:
 
 - [ ] **Step 4: Run tests to verify they pass**
 
-Run: `cd /mnt/c/Users/arjun.myanger/development/pokemon-battle-sim && source .venv/bin/activate && python -m pytest tests/engine/test_pokemon.py -v`
+Run: `cd ~/development/pokemon-battle-sim && source .venv/bin/activate && python -m pytest tests/engine/test_pokemon.py -v`
 Expected: 5 passed
 
 - [ ] **Step 5: Commit**
@@ -405,7 +405,7 @@ def test_dual_type_matchup():
 
 - [ ] **Step 2: Run tests to verify they fail**
 
-Run: `cd /mnt/c/Users/arjun.myanger/development/pokemon-battle-sim && source .venv/bin/activate && python -m pytest tests/engine/test_typechart.py -v`
+Run: `cd ~/development/pokemon-battle-sim && source .venv/bin/activate && python -m pytest tests/engine/test_typechart.py -v`
 Expected: FAIL with ImportError
 
 - [ ] **Step 3: Implement type chart**
@@ -462,7 +462,7 @@ def get_matchup(attack_type: str, defend_types: list[str]) -> float:
 
 - [ ] **Step 4: Run tests to verify they pass**
 
-Run: `cd /mnt/c/Users/arjun.myanger/development/pokemon-battle-sim && source .venv/bin/activate && python -m pytest tests/engine/test_typechart.py -v`
+Run: `cd ~/development/pokemon-battle-sim && source .venv/bin/activate && python -m pytest tests/engine/test_typechart.py -v`
 Expected: 5 passed
 
 - [ ] **Step 5: Commit**
@@ -554,7 +554,7 @@ def test_special_move_uses_sp_stats():
 
 - [ ] **Step 2: Run tests to verify they fail**
 
-Run: `cd /mnt/c/Users/arjun.myanger/development/pokemon-battle-sim && source .venv/bin/activate && python -m pytest tests/engine/test_damage.py -v`
+Run: `cd ~/development/pokemon-battle-sim && source .venv/bin/activate && python -m pytest tests/engine/test_damage.py -v`
 Expected: FAIL with ImportError
 
 - [ ] **Step 3: Implement damage calculator**
@@ -633,7 +633,7 @@ def calculate_damage(
 
 - [ ] **Step 4: Run tests to verify they pass**
 
-Run: `cd /mnt/c/Users/arjun.myanger/development/pokemon-battle-sim && source .venv/bin/activate && python -m pytest tests/engine/test_damage.py -v`
+Run: `cd ~/development/pokemon-battle-sim && source .venv/bin/activate && python -m pytest tests/engine/test_damage.py -v`
 Expected: 4 passed
 
 - [ ] **Step 5: Commit**
@@ -732,7 +732,7 @@ def test_paralysis_speed_quarter():
 
 - [ ] **Step 2: Run tests to verify they fail**
 
-Run: `cd /mnt/c/Users/arjun.myanger/development/pokemon-battle-sim && source .venv/bin/activate && python -m pytest tests/engine/test_moves.py -v`
+Run: `cd ~/development/pokemon-battle-sim && source .venv/bin/activate && python -m pytest tests/engine/test_moves.py -v`
 Expected: FAIL with ImportError
 
 - [ ] **Step 3: Implement move effects**
@@ -813,7 +813,7 @@ def get_effective_speed(pokemon: Pokemon) -> int:
 
 - [ ] **Step 4: Run tests to verify they pass**
 
-Run: `cd /mnt/c/Users/arjun.myanger/development/pokemon-battle-sim && source .venv/bin/activate && python -m pytest tests/engine/test_moves.py -v`
+Run: `cd ~/development/pokemon-battle-sim && source .venv/bin/activate && python -m pytest tests/engine/test_moves.py -v`
 Expected: 7 passed
 
 - [ ] **Step 5: Commit**
@@ -886,7 +886,7 @@ def test_get_learnable_moves(client):
 
 - [ ] **Step 2: Run tests to verify they fail**
 
-Run: `cd /mnt/c/Users/arjun.myanger/development/pokemon-battle-sim && source .venv/bin/activate && python -m pytest tests/data/test_pokeapi_client.py -v`
+Run: `cd ~/development/pokemon-battle-sim && source .venv/bin/activate && python -m pytest tests/data/test_pokeapi_client.py -v`
 Expected: FAIL with ImportError
 
 - [ ] **Step 3: Implement PokeAPI client**
@@ -1020,7 +1020,7 @@ Then add a helper to Pokemon for replacing moves after creation — edit `src/en
 
 - [ ] **Step 4: Run tests to verify they pass**
 
-Run: `cd /mnt/c/Users/arjun.myanger/development/pokemon-battle-sim && source .venv/bin/activate && python -m pytest tests/data/test_pokeapi_client.py -v`
+Run: `cd ~/development/pokemon-battle-sim && source .venv/bin/activate && python -m pytest tests/data/test_pokeapi_client.py -v`
 Expected: 6 passed (requires internet connection)
 
 - [ ] **Step 5: Commit**
@@ -1085,7 +1085,7 @@ def test_constant_to_api_name():
 
 - [ ] **Step 2: Run tests to verify they fail**
 
-Run: `cd /mnt/c/Users/arjun.myanger/development/pokemon-battle-sim && source .venv/bin/activate && python -m pytest tests/data/test_champion_loader.py -v`
+Run: `cd ~/development/pokemon-battle-sim && source .venv/bin/activate && python -m pytest tests/data/test_champion_loader.py -v`
 Expected: FAIL with ImportError
 
 - [ ] **Step 3: Implement champion loader**
@@ -1098,7 +1098,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 
-_DECOMP_TRAINERS_PATH = Path("/mnt/c/Users/arjun.myanger/development/pokeplatinum/res/trainers/data")
+_DECOMP_TRAINERS_PATH = Path.home() / "development/pokeplatinum/res/trainers/data"
 
 # Champion/E4 files we support
 _CHAMPION_FILES = [
@@ -1195,7 +1195,7 @@ class ChampionLoader:
 
 - [ ] **Step 4: Run tests to verify they pass**
 
-Run: `cd /mnt/c/Users/arjun.myanger/development/pokemon-battle-sim && source .venv/bin/activate && python -m pytest tests/data/test_champion_loader.py -v`
+Run: `cd ~/development/pokemon-battle-sim && source .venv/bin/activate && python -m pytest tests/data/test_champion_loader.py -v`
 Expected: 4 passed
 
 - [ ] **Step 5: Commit**
@@ -1313,7 +1313,7 @@ def test_battle_win_condition():
 
 - [ ] **Step 2: Run tests to verify they fail**
 
-Run: `cd /mnt/c/Users/arjun.myanger/development/pokemon-battle-sim && source .venv/bin/activate && python -m pytest tests/engine/test_battle.py -v`
+Run: `cd ~/development/pokemon-battle-sim && source .venv/bin/activate && python -m pytest tests/engine/test_battle.py -v`
 Expected: FAIL with ImportError
 
 - [ ] **Step 3: Implement battle engine**
@@ -1557,7 +1557,7 @@ class Battle:
 
 - [ ] **Step 4: Run tests to verify they pass**
 
-Run: `cd /mnt/c/Users/arjun.myanger/development/pokemon-battle-sim && source .venv/bin/activate && python -m pytest tests/engine/test_battle.py -v`
+Run: `cd ~/development/pokemon-battle-sim && source .venv/bin/activate && python -m pytest tests/engine/test_battle.py -v`
 Expected: 5 passed
 
 - [ ] **Step 5: Commit**
@@ -1641,7 +1641,7 @@ def test_detect_switch_loop():
 
 - [ ] **Step 2: Run tests to verify they fail**
 
-Run: `cd /mnt/c/Users/arjun.myanger/development/pokemon-battle-sim && source .venv/bin/activate && python -m pytest tests/ai/test_memory.py -v`
+Run: `cd ~/development/pokemon-battle-sim && source .venv/bin/activate && python -m pytest tests/ai/test_memory.py -v`
 Expected: FAIL with ImportError
 
 - [ ] **Step 3: Implement AI memory**
@@ -1716,7 +1716,7 @@ class BattleMemory:
 
 - [ ] **Step 4: Run tests to verify they pass**
 
-Run: `cd /mnt/c/Users/arjun.myanger/development/pokemon-battle-sim && source .venv/bin/activate && python -m pytest tests/ai/test_memory.py -v`
+Run: `cd ~/development/pokemon-battle-sim && source .venv/bin/activate && python -m pytest tests/ai/test_memory.py -v`
 Expected: 5 passed
 
 - [ ] **Step 5: Commit**
@@ -1773,7 +1773,7 @@ def test_apply_weights():
 
 - [ ] **Step 2: Run tests to verify they fail**
 
-Run: `cd /mnt/c/Users/arjun.myanger/development/pokemon-battle-sim && source .venv/bin/activate && python -m pytest tests/ai/test_personality.py -v`
+Run: `cd ~/development/pokemon-battle-sim && source .venv/bin/activate && python -m pytest tests/ai/test_personality.py -v`
 Expected: FAIL with ImportError
 
 - [ ] **Step 3: Implement personality profiles**
@@ -1827,7 +1827,7 @@ def get_champion_personality(name: str) -> Personality:
 
 - [ ] **Step 4: Run tests to verify they pass**
 
-Run: `cd /mnt/c/Users/arjun.myanger/development/pokemon-battle-sim && source .venv/bin/activate && python -m pytest tests/ai/test_personality.py -v`
+Run: `cd ~/development/pokemon-battle-sim && source .venv/bin/activate && python -m pytest tests/ai/test_personality.py -v`
 Expected: 5 passed
 
 - [ ] **Step 5: Commit**
@@ -1901,7 +1901,7 @@ def test_rank_threats():
 
 - [ ] **Step 2: Run tests to verify they fail**
 
-Run: `cd /mnt/c/Users/arjun.myanger/development/pokemon-battle-sim && source .venv/bin/activate && python -m pytest tests/ai/test_opponent_model.py -v`
+Run: `cd ~/development/pokemon-battle-sim && source .venv/bin/activate && python -m pytest tests/ai/test_opponent_model.py -v`
 Expected: FAIL with ImportError
 
 - [ ] **Step 3: Implement opponent model**
@@ -1965,7 +1965,7 @@ class OpponentModel:
 
 - [ ] **Step 4: Run tests to verify they pass**
 
-Run: `cd /mnt/c/Users/arjun.myanger/development/pokemon-battle-sim && source .venv/bin/activate && python -m pytest tests/ai/test_opponent_model.py -v`
+Run: `cd ~/development/pokemon-battle-sim && source .venv/bin/activate && python -m pytest tests/ai/test_opponent_model.py -v`
 Expected: 5 passed
 
 - [ ] **Step 5: Commit**
@@ -2073,7 +2073,7 @@ def test_aggressive_personality_favors_damage():
 
 - [ ] **Step 2: Run tests to verify they fail**
 
-Run: `cd /mnt/c/Users/arjun.myanger/development/pokemon-battle-sim && source .venv/bin/activate && python -m pytest tests/ai/test_scorer.py -v`
+Run: `cd ~/development/pokemon-battle-sim && source .venv/bin/activate && python -m pytest tests/ai/test_scorer.py -v`
 Expected: FAIL with ImportError
 
 - [ ] **Step 3: Implement AI scorer**
@@ -2220,7 +2220,7 @@ class MoveScorer:
 
 - [ ] **Step 4: Run tests to verify they pass**
 
-Run: `cd /mnt/c/Users/arjun.myanger/development/pokemon-battle-sim && source .venv/bin/activate && python -m pytest tests/ai/test_scorer.py -v`
+Run: `cd ~/development/pokemon-battle-sim && source .venv/bin/activate && python -m pytest tests/ai/test_scorer.py -v`
 Expected: 4 passed
 
 - [ ] **Step 5: Commit**
@@ -2300,7 +2300,7 @@ def test_lookahead_considers_opponent_response():
 
 - [ ] **Step 2: Run tests to verify they fail**
 
-Run: `cd /mnt/c/Users/arjun.myanger/development/pokemon-battle-sim && source .venv/bin/activate && python -m pytest tests/ai/test_lookahead.py -v`
+Run: `cd ~/development/pokemon-battle-sim && source .venv/bin/activate && python -m pytest tests/ai/test_lookahead.py -v`
 Expected: FAIL with ImportError
 
 - [ ] **Step 3: Implement lookahead**
@@ -2443,7 +2443,7 @@ class Lookahead:
 
 - [ ] **Step 4: Run tests to verify they pass**
 
-Run: `cd /mnt/c/Users/arjun.myanger/development/pokemon-battle-sim && source .venv/bin/activate && python -m pytest tests/ai/test_lookahead.py -v`
+Run: `cd ~/development/pokemon-battle-sim && source .venv/bin/activate && python -m pytest tests/ai/test_lookahead.py -v`
 Expected: 3 passed
 
 - [ ] **Step 5: Commit**
@@ -3077,7 +3077,7 @@ if __name__ == "__main__":
 
 - [ ] **Step 2: Verify it runs**
 
-Run: `cd /mnt/c/Users/arjun.myanger/development/pokemon-battle-sim && source .venv/bin/activate && python -m src.cli.app --help`
+Run: `cd ~/development/pokemon-battle-sim && source .venv/bin/activate && python -m src.cli.app --help`
 Expected: Shows typer help with the `battle` command
 
 - [ ] **Step 3: Commit**
@@ -3178,7 +3178,7 @@ def test_ai_scorer_integration():
 
 - [ ] **Step 2: Run all tests**
 
-Run: `cd /mnt/c/Users/arjun.myanger/development/pokemon-battle-sim && source .venv/bin/activate && python -m pytest tests/ -v --ignore=tests/data/test_pokeapi_client.py`
+Run: `cd ~/development/pokemon-battle-sim && source .venv/bin/activate && python -m pytest tests/ -v --ignore=tests/data/test_pokeapi_client.py`
 Expected: All tests pass (excluding PokeAPI tests which need internet)
 
 - [ ] **Step 3: Commit**
@@ -3194,20 +3194,20 @@ git commit -m "feat: integration tests verifying full battle and AI scoring"
 
 - [ ] **Step 1: Run full test suite**
 
-Run: `cd /mnt/c/Users/arjun.myanger/development/pokemon-battle-sim && source .venv/bin/activate && python -m pytest tests/ -v --ignore=tests/data/test_pokeapi_client.py`
+Run: `cd ~/development/pokemon-battle-sim && source .venv/bin/activate && python -m pytest tests/ -v --ignore=tests/data/test_pokeapi_client.py`
 Expected: All tests pass
 
 - [ ] **Step 2: Run PokeAPI tests (requires internet)**
 
-Run: `cd /mnt/c/Users/arjun.myanger/development/pokemon-battle-sim && source .venv/bin/activate && python -m pytest tests/data/test_pokeapi_client.py -v`
+Run: `cd ~/development/pokemon-battle-sim && source .venv/bin/activate && python -m pytest tests/data/test_pokeapi_client.py -v`
 Expected: All tests pass
 
 - [ ] **Step 3: Verify CLI launches**
 
-Run: `cd /mnt/c/Users/arjun.myanger/development/pokemon-battle-sim && source .venv/bin/activate && python -m src.cli.app --help`
+Run: `cd ~/development/pokemon-battle-sim && source .venv/bin/activate && python -m src.cli.app --help`
 Expected: Shows help output with `battle` command
 
 - [ ] **Step 4: Manual smoke test**
 
-Run: `cd /mnt/c/Users/arjun.myanger/development/pokemon-battle-sim && source .venv/bin/activate && python -m src.cli.app battle`
+Run: `cd ~/development/pokemon-battle-sim && source .venv/bin/activate && python -m src.cli.app battle`
 Expected: Game starts, shows team selection, can begin a battle

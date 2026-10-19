@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 
-_DECOMP_TRAINERS_PATH = Path("/mnt/c/Users/arjun.myanger/development/pokeplatinum/res/trainers/data")
+_DECOMP_TRAINERS_PATH = Path.home() / "development/pokeplatinum/res/trainers/data"
 
 _CHAMPION_FILES = [
     # Gym Leaders (canon progression order)
